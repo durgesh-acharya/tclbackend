@@ -3,7 +3,7 @@ name: Deploy to VPS
 on:
   push:
     branches:
-      - main  # You can adjust this to the branch you are using for production
+      - main  # Adjust this to your branch if needed
 
 jobs:
   deploy:
@@ -23,18 +23,15 @@ jobs:
         # Ensure SSH can connect without strict host key checking
         ssh -o StrictHostKeyChecking=no root@103.168.18.92 -p 7576 << 'EOF'
           # Navigate to the app directory
-          cd /var/www/tclbackend  # Replace this with the actual path on your VPS
+          cd /var/www/tclbackend || exit 1  # Make sure the directory exists
 
           # Pull the latest changes from your GitHub repository
           git pull origin main  # Adjust if you are using a different branch
 
-          # Install or update dependencies (in case any new dependencies were added)
+          # Install or update dependencies
           npm install
 
-          # If you're using environment variables, you might want to restart your app with pm2
-          # Restart the app using PM2 or any other process manager you use
-          pm2 restart expressjs  # Replace 'app-name' with the name you use in PM2 to refer to the app
+          # Restart the app using the full path to pm2
+          /root/.nvm/versions/node/v22.14.0/bin/pm2 restart expressjs  # Replace with the correct app name
 
-          # Optionally, you can run a specific command to restart the server, for example:
-          # pm2 reload ecosystem.config.js  # If you're using PM2 with an ecosystem config
         EOF
