@@ -22,16 +22,26 @@ jobs:
       run: |
         # Ensure SSH can connect without strict host key checking
         ssh -o StrictHostKeyChecking=no root@103.168.18.92 -p 7576 << 'EOF'
-          # Navigate to the app directory
-          cd /var/www/tclbackend || exit 1  # Make sure the directory exists
+          # Source NVM to ensure the correct Node environment is loaded
+          source /root/.nvm/nvm.sh
+          nvm use 22.14.0  # Ensure the correct Node.js version is used
 
-          # Pull the latest changes from your GitHub repository
-          git pull origin main  # Adjust if you are using a different branch
+          # Navigate to the app directory
+          cd /var/www/tclbackend || exit 1  # Ensure the directory exists
+
+          # Stash any local changes to avoid merge conflicts
+          git stash || true  # 'true' ensures it doesn't fail if there's nothing to stash
+
+          # Pull the latest changes from GitHub
+          git pull origin main
+
+          # Optionally, apply the stashed changes (if any)
+          git stash pop || true
 
           # Install or update dependencies
           npm install
 
-          # Restart the app using the full path to pm2
-          /root/.nvm/versions/node/v22.14.0/bin/pm2 restart expressjs  # Replace with the correct app name
+          # Restart the app using pm2
+          /root/.nvm/versions/node/v22.14.0/bin/pm2 restart expressjs
 
         EOF
