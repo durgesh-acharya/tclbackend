@@ -1,0 +1,40 @@
+name: Deploy to VPS
+
+on:
+  push:
+    branches:
+      - main  # You can adjust this to the branch you are using for production
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # The job will run on a virtual Ubuntu environment
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2  # This will check out your repository's code
+
+    - name: Set up SSH key
+      uses: webfactory/ssh-agent@v0.5.3  # Sets up SSH authentication
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Add the private SSH key from GitHub Secrets
+
+    - name: Deploy to VPS
+      run: |
+        # Ensure SSH can connect without strict host key checking
+        ssh -o StrictHostKeyChecking=no root@103.168.18.92 -p 7576 << 'EOF'
+          # Navigate to the app directory
+          cd /var/www/tclbackend  # Replace this with the actual path on your VPS
+
+          # Pull the latest changes from your GitHub repository
+          git pull origin main  # Adjust if you are using a different branch
+
+          # Install or update dependencies (in case any new dependencies were added)
+          npm install
+
+          # If you're using environment variables, you might want to restart your app with pm2
+          # Restart the app using PM2 or any other process manager you use
+          pm2 restart expressjs  # Replace 'app-name' with the name you use in PM2 to refer to the app
+
+          # Optionally, you can run a specific command to restart the server, for example:
+          # pm2 reload ecosystem.config.js  # If you're using PM2 with an ecosystem config
+        EOF
