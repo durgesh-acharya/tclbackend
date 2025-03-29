@@ -15,11 +15,13 @@ const locationRouter = require('./routes/locations');
 const staycategoriesRouter = require('./routes/staycategories');
 const durationsRouter = require('./routes/durations');
 const locationdurationsRouter = require('./routes/locationdurations');
+const destinationroutesRouter = require('./routes/destinationrotes');
 // use routes
 app.use('/api/locations',locationRouter);
 app.use('/api/staycategories',staycategoriesRouter);
 app.use('/api/durations',durationsRouter);
 app.use('/api/locationdurations',locationdurationsRouter);
+app.use('/api/destinationroutes',destinationroutesRouter);
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
