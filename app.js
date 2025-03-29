@@ -14,10 +14,12 @@ app.use(cors());
 const locationRouter = require('./routes/locations');
 const staycategoriesRouter = require('./routes/staycategories');
 const durationsRouter = require('./routes/durations');
+const locationdurationsRouter = require('./routes/locationdurations');
 // use routes
 app.use('/api/locations',locationRouter);
 app.use('/api/staycategories',staycategoriesRouter);
 app.use('/api/durations',durationsRouter);
+app.use('/api/locationdurations',locationdurationsRouter);
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
