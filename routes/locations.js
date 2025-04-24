@@ -37,7 +37,7 @@ router.post('/create', upload.single('locations_imgurl'), (req, res) => {
   }
 
   // Check if file was uploaded
-  const imageUrl = req.file ? '/images/' + req.file.filename : null;
+  const imageUrl = req.file ? '/assets/' + req.file.filename : null;
 
   // Handle case when no file was uploaded
   if (!imageUrl) {
