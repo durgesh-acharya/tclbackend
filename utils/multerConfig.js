@@ -5,7 +5,7 @@ const path = require('path');
 // Set the storage engine
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, '/var/www/uploads'); // Set the upload directory
+    cb(null, '/var/www/images'); // Set the upload directory
   },
   filename: function (req, file, cb) {
     const timestamp = Date.now(); // Generate timestamp for unique filename
