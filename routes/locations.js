@@ -29,7 +29,7 @@ router.get('/:id', (req, res) => {
 // Create a new location with image upload
 router.post('/create', upload.single('locations_imgurl'), (req, res) => {
   const { locations_name, locations_isactive } = req.body;
-  const imageUrl = req.file ? '/uploads/' + req.file.filename : ''; // Save the file path (relative path)
+  const imageUrl = req.file ? '/images/' + req.file.filename : ''; // Save the file path (relative path)
 
   const query = 'INSERT INTO locations (locations_name, locations_imgurl, locations_isactive) VALUES (?, ?, ?)';
   db.query(query, [locations_name, imageUrl, locations_isactive], (err, result) => {

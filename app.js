@@ -16,12 +16,21 @@ const staycategoriesRouter = require('./routes/staycategories');
 const durationsRouter = require('./routes/durations');
 const locationdurationsRouter = require('./routes/locationdurations');
 const destinationroutesRouter = require('./routes/destinationrotes');
+const packagesRouter = require('./routes/packages');
+const includetagslistRouter = require('./routes/includetaglist');
+const includeRouter = require('./routes/include');
+const triphighlightsRouter = require('./routes/triphighlights');
 // use routes
 app.use('/api/locations',locationRouter);
 app.use('/api/staycategories',staycategoriesRouter);
 app.use('/api/durations',durationsRouter);
 app.use('/api/locationdurations',locationdurationsRouter);
 app.use('/api/destinationroutes',destinationroutesRouter);
+app.use('/api/packages',packagesRouter);
+app.use('/api/includetaglist',includetagslistRouter);
+app.use('/api/include',includeRouter);
+app.use('/api/triphighlights',triphighlightsRouter);
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
