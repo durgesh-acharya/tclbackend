@@ -45,7 +45,7 @@ router.post('/create', upload.single('locations_imgurl'), (req, res) => {
   }
 
   // SQL query to insert location data into the database
-  const query = 'INSERT INTO locations (locations_name, locations_imgurl, locations_isactive) VALUES (?, ?, ?)';
+  const query = 'INSERT INTO locations (locations_name, locations_url, locations_isactive) VALUES (?, ?, ?)';
 
   db.query(query, [locations_name, imageUrl, locations_isactive], (err, result) => {
     if (err) {
