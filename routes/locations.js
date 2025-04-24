@@ -55,15 +55,12 @@ router.put('/edit/:id', (req, res) => {
 router.put('/changeimage/:id', upload.single('image'), (req, res) => {
   const locationId = req.params.id;
 
-  // Check if file is uploaded
   if (!req.file) {
     return res.status(400).json({ status: false, message: 'No file uploaded', data: [] });
   }
 
-  // Get the new image filename from req.file (it contains the name of the file after upload)
-  const newImageUrl = `/uploads/${req.file.filename}`; // New image URL
+  const newImageUrl = `/images/${req.file.filename}`; // New image URL
 
-  // Get the current image URL from the database
   db.query('SELECT locations_url FROM locations WHERE locations_id = ?', [locationId], (err, results) => {
     if (err) {
       return res.status(500).json({ status: false, message: 'Error fetching current image', data: [] });
@@ -75,11 +72,9 @@ router.put('/changeimage/:id', upload.single('image'), (req, res) => {
 
     const oldImageUrl = results[0].locations_url;
 
-    // If the old image exists, delete it from the server
+    //  Safely delete old image if it exists
     if (oldImageUrl) {
-      const oldImagePath = path.join(__dirname, '..', oldImageUrl); // Construct the old image path on the server
-
-      // Check if the file exists and delete it
+      const oldImagePath = path.join('/var/www', oldImageUrl);
       fs.unlink(oldImagePath, (err) => {
         if (err) {
           console.error('Error deleting old image:', err);
@@ -89,7 +84,7 @@ router.put('/changeimage/:id', upload.single('image'), (req, res) => {
       });
     }
 
-    // Update the location record with the new image URL
+    // Update DB with new image URL
     const query = 'UPDATE locations SET locations_url = ? WHERE locations_id = ?';
     db.query(query, [newImageUrl, locationId], (err, result) => {
       if (err) {
@@ -100,7 +95,6 @@ router.put('/changeimage/:id', upload.single('image'), (req, res) => {
         return res.status(404).json({ status: false, message: 'Location not found', data: [] });
       }
 
-      // Respond with success
       handleResponse(null, [{ message: 'Image updated successfully', new_image_url: newImageUrl }], res);
     });
   });
