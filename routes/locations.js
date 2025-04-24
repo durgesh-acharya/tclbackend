@@ -26,17 +26,42 @@ router.get('/:id', (req, res) => {
   });
 });
 
+
 // Create a new location with image upload
 router.post('/create', upload.single('locations_imgurl'), (req, res) => {
   const { locations_name, locations_isactive } = req.body;
 
-  const imageUrl = req.file ? '/images/' + req.file.filename : ''; // Save the file path (relative path)
+  // Check if necessary fields are present
+  if (!locations_name || !locations_isactive) {
+    return res.status(400).json({ message: 'Missing required fields: locations_name or locations_isactive' });
+  }
 
+  // Check if file was uploaded
+  const imageUrl = req.file ? '/images/' + req.file.filename : null;
+
+  // Handle case when no file was uploaded
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'No image uploaded.' });
+  }
+
+  // SQL query to insert location data into the database
   const query = 'INSERT INTO locations (locations_name, locations_imgurl, locations_isactive) VALUES (?, ?, ?)';
+
   db.query(query, [locations_name, imageUrl, locations_isactive], (err, result) => {
-    handleResponse(err, [{ location_id: result.insertId }], res);
+    if (err) {
+      console.error(err); // Log the error for debugging
+      return res.status(500).json({ message: 'Database error occurred', error: err });
+    }
+
+    // Return the result with the location ID
+    return res.status(201).json({
+      message: 'Location created successfully',
+      location_id: result.insertId,
+      image_url: imageUrl
+    });
   });
 });
+
 
 // Update a location by ID
 router.put('/edit/:id', (req, res) => {
