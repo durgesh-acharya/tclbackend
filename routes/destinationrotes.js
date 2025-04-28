@@ -66,4 +66,43 @@ router.delete('/delete/:id', (req, res) => {
   });
 });
 
+// Get all destination routes along with their location names
+router.get('/joined/all', (req, res) => {
+  const query = `
+    SELECT 
+      destinationroutes.destinationroutes_id,
+      destinationroutes.destinationroutes_name,
+      destinationroutes.destinationroutes_locationsid,
+      destinationroutes.destinationroutes_isactive,
+      locations.locations_name
+    FROM destinationroutes
+    JOIN locations ON destinationroutes.destinationroutes_locationsid = locations.locations_id
+  `;
+
+  db.query(query, (err, results) => {
+    handleResponse(err, results, res);
+  });
+});
+
+// Get destination routes by location ID
+router.get('/joined/location/:locationid', (req, res) => {
+  const locationId = req.params.locationid;
+
+  const query = `
+    SELECT 
+      destinationroutes.destinationroutes_id,
+      destinationroutes.destinationroutes_name,
+      destinationroutes.destinationroutes_locationsid,
+      destinationroutes.destinationroutes_isactive,
+      locations.locations_name
+    FROM destinationroutes
+    JOIN locations ON destinationroutes.destinationroutes_locationsid = locations.locations_id
+    WHERE destinationroutes.destinationroutes_locationsid = ?
+  `;
+
+  db.query(query, [locationId], (err, results) => {
+    handleResponse(err, results, res);
+  });
+});
+
 module.exports = router;
