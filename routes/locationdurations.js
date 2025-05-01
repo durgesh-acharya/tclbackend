@@ -128,30 +128,47 @@ router.delete('/delete/:id', (req, res) => {
   });
 });
 
-// Get all location durations with JOIN on locations and durations
+//get joined data
+
 router.get('/joined', (req, res) => {
   const query = `
-  SELECT 
-  ld.locationdurations_id,
-  ld.locationdurations_tags,
-  ld.locationdurations_startsfrom,
-  ld.locationdurations_imageurl,
-  ld.locationdurations_isactive,
-  l.locations_id,
-  l.locations_name,
-  l.locations_url,
-  l.locations_isactive AS location_isactive,
-  d.durations_id,
-  d.durations_name
-FROM locationdurations ld
-LEFT JOIN locations l ON ld.locationdurations_locationsid = l.locations_id
-LEFT JOIN durations d ON ld.locationdurations_durations_id = d.durations_id
+    SELECT 
+      locationdurations.locationdurations_id,
+      locationdurations.locationdurations_tags,
+      locationdurations.locationdurations_startsfrom,
+      locationdurations.locationdurations_imageurl,
+      locationdurations.locationdurations_isactive,
+
+      locations.locations_id,
+      locations.locations_name,
+      locations.locations_url,
+      locations.locations_isactive AS locations_isactive,
+
+      durations.durations_id,
+      durations.durations_name
+
+    FROM locationdurations
+    JOIN locations 
+      ON locationdurations.locationdurations_locationsid = locations.locations_id
+    JOIN durations 
+      ON locationdurations.locationdurations_durations_id = durations.durations_id
   `;
 
   db.query(query, (err, results) => {
-    handleResponse(err, results, res); // Still using your reusable response handler
+    if (err) {
+      console.error('Query Error:', err);
+      return res.status(500).json({ status: false, message: 'Database error', data: [] });
+    }
+
+    if (!results || results.length === 0) {
+      return res.status(404).json({ status: false, message: 'No data available', data: [] });
+    }
+
+    res.json({ status: true, message: 'Success', data: results });
   });
 });
+
+
 
 
 
