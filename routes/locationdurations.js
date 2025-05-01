@@ -128,71 +128,31 @@ router.delete('/delete/:id', (req, res) => {
   });
 });
 
-//data joined with locations and durations
-router.get('/joined-details', (req, res) => {
+// Get all location durations with JOIN on locations and durations
+router.get('/joined', (req, res) => {
   const query = `
     SELECT 
-      ld.*,
-      l.* AS location_data,
-      d.* AS duration_data
-    FROM 
-      locationdurations ld
-    JOIN 
-      locations l ON ld.locationdurations_locationsid = l.locations_id
-    JOIN 
-      durations d ON ld.locationdurations_durations_id = d.durations_id
+      ld.locationdurations_id,
+      ld.locationdurations_tags,
+      ld.locationdurations_startsfrom,
+      ld.locationdurations_imageurl,
+      ld.locationdurations_isactive,
+      l.locations_id,
+      l.locations_name,
+      l.locations_url,
+      l.locations_isactive AS location_isactive,
+      d.durations_id,
+      d.durations_name
+    FROM locationdurations ld
+    JOIN locations l ON ld.locationdurations_locationsid = l.locations_id
+    JOIN durations d ON ld.locationdurations_durations_id = d.durations_id
   `;
 
   db.query(query, (err, results) => {
-    if (err) {
-      return res.status(500).json({ status: false, message: 'Database error', data: [] });
-    }
-
-    // Nest location and duration data
-    const mappedResults = results.map(row => {
-      const {
-        locationdurations_id,
-        locationdurations_locationsid,
-        locationdurations_durations_id,
-        locationdurations_tags,
-        locationdurations_startsfrom,
-        locationdurations_imageurl,
-        locationdurations_isactive,
-        ...rest
-      } = row;
-
-      // Extract location and duration data
-      const location = {};
-      const duration = {};
-
-      for (const key in rest) {
-        if (key.startsWith('location_data.')) {
-          location[key.replace('location_data.', '')] = rest[key];
-        } else if (key.startsWith('duration_data.')) {
-          duration[key.replace('duration_data.', '')] = rest[key];
-        }
-      }
-
-      return {
-        locationdurations_id,
-        locationdurations_locationsid,
-        locationdurations_durations_id,
-        locationdurations_tags,
-        locationdurations_startsfrom,
-        locationdurations_imageurl,
-        locationdurations_isactive,
-        location,
-        duration
-      };
-    });
-
-    res.json({
-      status: true,
-      message: 'Joined data fetched successfully',
-      data: mappedResults
-    });
+    handleResponse(err, results, res); // Still using your reusable response handler
   });
 });
+
 
 
 module.exports = router;
