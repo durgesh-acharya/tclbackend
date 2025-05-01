@@ -131,21 +131,21 @@ router.delete('/delete/:id', (req, res) => {
 // Get all location durations with JOIN on locations and durations
 router.get('/joined', (req, res) => {
   const query = `
-    SELECT 
-      ld.locationdurations_id,
-      ld.locationdurations_tags,
-      ld.locationdurations_startsfrom,
-      ld.locationdurations_imageurl,
-      ld.locationdurations_isactive,
-      l.locations_id,
-      l.locations_name,
-      l.locations_url,
-      l.locations_isactive AS location_isactive,
-      d.durations_id,
-      d.durations_name
-    FROM locationdurations ld
-    JOIN locations l ON ld.locationdurations_locationsid = l.locations_id
-    JOIN durations d ON ld.locationdurations_durations_id = d.durations_id
+  SELECT 
+  ld.locationdurations_id,
+  ld.locationdurations_tags,
+  ld.locationdurations_startsfrom,
+  ld.locationdurations_imageurl,
+  ld.locationdurations_isactive,
+  l.locations_id,
+  l.locations_name,
+  l.locations_url,
+  l.locations_isactive AS location_isactive,
+  d.durations_id,
+  d.durations_name
+FROM locationdurations ld
+LEFT JOIN locations l ON ld.locationdurations_locationsid = l.locations_id
+LEFT JOIN durations d ON ld.locationdurations_durations_id = d.durations_id
   `;
 
   db.query(query, (err, results) => {
