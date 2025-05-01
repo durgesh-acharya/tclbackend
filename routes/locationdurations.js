@@ -130,7 +130,7 @@ router.delete('/delete/:id', (req, res) => {
 
 //get joined data
 
-router.get('/joined', (req, res) => {
+router.get('/all/joined', (req, res) => {
   const query = `
     SELECT 
       locationdurations.locationdurations_id,
@@ -155,6 +155,7 @@ router.get('/joined', (req, res) => {
   `;
 
   db.query(query, (err, results) => {
+    
     if (err) {
       console.error('Query Error:', err);
       return res.status(500).json({ status: false, message: 'Database error', data: [] });
