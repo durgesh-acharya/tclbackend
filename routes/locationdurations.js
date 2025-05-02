@@ -30,22 +30,50 @@ router.get('/:id', (req, res) => {
 
 // Create a new location duration
 router.post('/create', upload.single('image'), (req, res) => {
-    const { locationdurations_locationsid, locationdurations_durations_id, locationdurations_isactive } = req.body;
-  
-    // Check if file is uploaded
-    if (!req.file) {
-      return res.status(400).json({ status: false, message: 'No file uploaded', data: [] });
+  const {
+    locationdurations_locationsid,
+    locationdurations_durations_id,
+    locationdurations_tags,
+    locationdurations_startsfrom,
+    locationdurations_isactive
+  } = req.body;
+
+  // Check if file is uploaded
+  if (!req.file) {
+    return res.status(400).json({ status: false, message: 'No file uploaded', data: [] });
+  }
+
+  const imageUrl = `/assets/${req.file.filename}`;
+
+  const query = `
+    INSERT INTO locationdurations 
+    (locationdurations_locationsid, locationdurations_durations_id, locationdurations_tags, locationdurations_startsfrom, locationdurations_imageurl, locationdurations_isactive) 
+    VALUES (?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(query, [
+    locationdurations_locationsid,
+    locationdurations_durations_id,
+    locationdurations_tags,
+    locationdurations_startsfrom,
+    imageUrl,
+    locationdurations_isactive
+  ], (err, result) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ status: false, message: 'Database error', data: [] });
     }
-  
-    // Get the image filename from req.file (it contains the name of the file after upload)
-    const imageUrl = `/uploads/${req.file.filename}`; // Construct the image URL
-  
-    // Insert the new location duration with the image URL
-    const query = 'INSERT INTO locationdurations (locationdurations_locationsid, locationdurations_durations_id, locationdurations_imageurl, locationdurations_isactive) VALUES (?, ?, ?, ?)';
-    db.query(query, [locationdurations_locationsid, locationdurations_durations_id, imageUrl, locationdurations_isactive], (err, result) => {
-      handleResponse(err, [{ locationdurations_id: result.insertId, image_url: imageUrl }], res); // Respond with inserted ID and image URL
+
+    return res.status(200).json({
+      status: true,
+      message: 'Location duration created successfully',
+      data: {
+        locationdurations_id: result.insertId,
+        image_url: imageUrl
+      }
     });
   });
+});
 
 // Update a location duration by ID
 router.put('/edit/:id', (req, res) => {
