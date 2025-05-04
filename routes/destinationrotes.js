@@ -97,7 +97,7 @@ router.get('/joined/location/:locationdurationid', (req, res) => {
       destinationroutes.destinationroutes_name,
       destinationroutes.destinationroutes_locationdurationsid,
       destinationroutes.destinationroutes_isactive,
-      locationdurations.locationdurations_name
+      locationdurations.locationdurations_tags
     FROM destinationroutes
     JOIN locationdurations 
       ON destinationroutes.destinationroutes_locationdurationsid = locationdurations.locationdurations_id
