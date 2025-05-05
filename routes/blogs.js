@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../db');
 const upload = require('../utils/multerConfig');
 const handleResponse = require('../utils/handleResponse');
+const bodyParser = require('body-parser');
 
 router.use(bodyParser.json());
 
