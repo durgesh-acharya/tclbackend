@@ -197,6 +197,28 @@ router.get('/all/joined', (req, res) => {
   });
 });
 
+// Get all location durations for a specific location ID
+router.get('/location/:locationId', (req, res) => {
+  const locationId = req.params.locationId;
+
+  const query = `
+    SELECT * FROM locationdurations
+    WHERE locationdurations_locationsid = ?
+  `;
+
+  db.query(query, [locationId], (err, results) => {
+    if (err) {
+      console.error('Query Error:', err);
+      return res.status(500).json({ status: false, message: 'Database error', data: [] });
+    }
+
+    if (!results || results.length === 0) {
+      return res.status(404).json({ status: false, message: 'No durations found for this location', data: [] });
+    }
+
+    res.json({ status: true, message: 'Success', data: results });
+  });
+});
 
 
 
