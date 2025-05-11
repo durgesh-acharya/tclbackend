@@ -30,8 +30,6 @@ router.post('/create', (req, res) => {
     packages_name, 
     packages_actualprice, 
     packages_offerprice, 
-    packages_noofnights, 
-    packages_noofdays, 
     packages_locationsid, 
     packages_locationdurations, 
     packages_destinationroutesid, 
@@ -44,22 +42,18 @@ router.post('/create', (req, res) => {
       packages_name, 
       packages_actualprice, 
       packages_offerprice, 
-      packages_noofnights, 
-      packages_noofdays, 
       packages_locationsid, 
       packages_locationdurations, 
       packages_destinationroutesid, 
       packages_staycategoriesid,
       packages_isactive
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.query(query, [
     packages_name, 
     packages_actualprice, 
-    packages_offerprice, 
-    packages_noofnights, 
-    packages_noofdays, 
+    packages_offerprice,  
     packages_locationsid, 
     packages_locationdurations, 
     packages_destinationroutesid, 
@@ -77,8 +71,6 @@ router.put('/edit/:id', (req, res) => {
     packages_name, 
     packages_actualprice, 
     packages_offerprice, 
-    packages_noofnights, 
-    packages_noofdays, 
     packages_locationsid, 
     packages_locationdurations, 
     packages_destinationroutesid, 
@@ -92,8 +84,6 @@ router.put('/edit/:id', (req, res) => {
       packages_name = ?, 
       packages_actualprice = ?, 
       packages_offerprice = ?, 
-      packages_noofnights = ?, 
-      packages_noofdays = ?, 
       packages_locationsid = ?, 
       packages_locationdurations = ?, 
       packages_destinationroutesid = ?, 
@@ -105,9 +95,7 @@ router.put('/edit/:id', (req, res) => {
   db.query(query, [
     packages_name, 
     packages_actualprice, 
-    packages_offerprice, 
-    packages_noofnights, 
-    packages_noofdays, 
+    packages_offerprice,  
     packages_locationsid, 
     packages_locationdurations, 
     packages_destinationroutesid, 
