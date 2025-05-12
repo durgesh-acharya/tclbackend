@@ -21,7 +21,7 @@ const includetagslistRouter = require('./routes/includetaglist');
 const includeRouter = require('./routes/include');
 const triphighlightsRouter = require('./routes/triphighlights');
 const blogsRouter = require('./routes/blogs');
-const itineraryhighlights = require('/routes/itineraryhighlights');
+const itineraryhighlights = require('./routes/itineraryhighlights');
 // use routes
 app.use('/api/locations',locationRouter);
 app.use('/api/staycategories',staycategoriesRouter);
