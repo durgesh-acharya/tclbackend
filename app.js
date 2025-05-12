@@ -21,6 +21,7 @@ const includetagslistRouter = require('./routes/includetaglist');
 const includeRouter = require('./routes/include');
 const triphighlightsRouter = require('./routes/triphighlights');
 const blogsRouter = require('./routes/blogs');
+const itineraryhighlights = require('/routes/itineraryhighlights');
 // use routes
 app.use('/api/locations',locationRouter);
 app.use('/api/staycategories',staycategoriesRouter);
@@ -32,6 +33,7 @@ app.use('/api/includetaglist',includetagslistRouter);
 app.use('/api/include',includeRouter);
 app.use('/api/triphighlights',triphighlightsRouter);
 app.use('/api/blogs',blogsRouter);
+app.use('/api/itineraryhighlights',itineraryhighlights );
 
 
 app.use(bodyParser.urlencoded({extended: true}));
