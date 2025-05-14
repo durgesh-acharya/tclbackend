@@ -32,7 +32,7 @@ router.get('/:id', (req, res) => {
  */
 router.get('/package/:packageId', (req, res) => {
   const { packageId } = req.params;
-  const query = 'SELECT * FROM itineraries WHERE itineraries_packagesid = ?';
+  const query = 'SELECT * FROM itineraries WHERE itineraries_paackagesid = ?';
   db.query(query, [packageId], (err, results) => {
     handleResponse(err, results, res);
   });
@@ -50,7 +50,7 @@ router.post('/create', (req, res) => {
   } = req.body;
 
   const query = `INSERT INTO itineraries 
-    (itineraries_day, itineraries_title, itineraries_description, itineraries_packagesid)
+    (itineraries_day, itineraries_title, itineraries_description, itineraries_paackagesid)
     VALUES (?, ?, ?, ?)`;
 
   db.query(query, [itineraries_day, itineraries_title, itineraries_description, itineraries_packagesid], (err, result) => {
@@ -74,7 +74,7 @@ router.put('/edit/:id', (req, res) => {
     itineraries_day = ?, 
     itineraries_title = ?, 
     itineraries_description = ?, 
-    itineraries_packagesid = ?
+    itineraries_paackagesid = ?
     WHERE itineraries_id = ?`;
 
   db.query(query, [itineraries_day, itineraries_title, itineraries_description, itineraries_packagesid, id], (err, result) => {
