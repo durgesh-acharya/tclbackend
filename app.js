@@ -24,6 +24,7 @@ const blogsRouter = require('./routes/blogs');
 const itineraryhighlights = require('./routes/itineraryhighlights');
 const itinerariesRouter = require('./routes/itineraries');
 const staysRouter = require('./routes/styas');
+const transfersRouter = require('./routes/transfers');
 // use routes
 app.use('/api/locations',locationRouter);
 app.use('/api/staycategories',staycategoriesRouter);
@@ -38,6 +39,7 @@ app.use('/api/blogs',blogsRouter);
 app.use('/api/itineraryhighlights',itineraryhighlights );
 app.use('/api/itineraries',itinerariesRouter );
 app.use('/api/stays',staysRouter );
+app.use('/api/transfers',transfersRouter );
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
