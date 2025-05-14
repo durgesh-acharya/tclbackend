@@ -23,7 +23,7 @@ const triphighlightsRouter = require('./routes/triphighlights');
 const blogsRouter = require('./routes/blogs');
 const itineraryhighlights = require('./routes/itineraryhighlights');
 const itinerariesRouter = require('./routes/itineraries');
-const staysRouter = require('./routes/stays');
+const staysRouter = require('./routes/styas');
 // use routes
 app.use('/api/locations',locationRouter);
 app.use('/api/staycategories',staycategoriesRouter);
