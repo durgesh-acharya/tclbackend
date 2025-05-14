@@ -44,18 +44,23 @@ router.get('/package/:packageId', (req, res) => {
 router.post('/create', (req, res) => {
   const {
     itineraries_day,
-    itineraries_title,
+    itineraries_tiitle,
     itineraries_description,
-    itineraries_packagesid
+    itineraries_paackagesid
   } = req.body;
 
-  const query = `INSERT INTO itineraries 
-    (itineraries_day, itineraries_title, itineraries_description, itineraries_paackagesid)
+  const query = `
+    INSERT INTO itineraries 
+    (itineraries_day, itineraries_tiitle, itineraries_description, itineraries_paackagesid)
     VALUES (?, ?, ?, ?)`;
 
-  db.query(query, [itineraries_day, itineraries_title, itineraries_description, itineraries_packagesid], (err, result) => {
-    handleResponse(err, [{ itineraries_id: result?.insertId }], res);
-  });
+  db.query(
+    query,
+    [itineraries_day, itineraries_tiitle, itineraries_description, itineraries_paackagesid],
+    (err, result) => {
+      handleResponse(err, [{ itineraries_id: result?.insertId }], res);
+    }
+  );
 });
 
 /**
@@ -65,24 +70,29 @@ router.put('/edit/:id', (req, res) => {
   const { id } = req.params;
   const {
     itineraries_day,
-    itineraries_title,
+    itineraries_tiitle,
     itineraries_description,
-    itineraries_packagesid
+    itineraries_paackagesid
   } = req.body;
 
-  const query = `UPDATE itineraries SET 
+  const query = `
+    UPDATE itineraries SET 
     itineraries_day = ?, 
-    itineraries_title = ?, 
+    itineraries_tiitle = ?, 
     itineraries_description = ?, 
     itineraries_paackagesid = ?
     WHERE itineraries_id = ?`;
 
-  db.query(query, [itineraries_day, itineraries_title, itineraries_description, itineraries_packagesid, id], (err, result) => {
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ status: false, message: 'Itinerary not found', data: [] });
+  db.query(
+    query,
+    [itineraries_day, itineraries_tiitle, itineraries_description, itineraries_paackagesid, id],
+    (err, result) => {
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ status: false, message: 'Itinerary not found', data: [] });
+      }
+      handleResponse(err, [{ message: 'Itinerary updated' }], res);
     }
-    handleResponse(err, [{ message: 'Itinerary updated' }], res);
-  });
+  );
 });
 
 /**
