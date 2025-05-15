@@ -25,6 +25,9 @@ const itinerariesRouter = require('./routes/itineraries');
 const staysRouter = require('./routes/styas');
 const transfersRouter = require('./routes/transfers');
 const triphighlightsRouter = require('./routes/triphighlights');
+const tourinclusionRouter = require('./routes/tourinclusion');
+const tourexclusionRouter = require('./routes/tourexclusion');
+const knowbeforeyougoRouter = require('./routes/knowbeforeyougo');
 // use routes
 app.use('/api/locations',locationRouter);
 app.use('/api/staycategories',staycategoriesRouter);
@@ -40,6 +43,9 @@ app.use('/api/itineraries',itinerariesRouter );
 app.use('/api/stays',staysRouter );
 app.use('/api/transfers',transfersRouter );
 app.use('/api/triphighlights',triphighlightsRouter);
+app.use('/api/tourinclusion',tourinclusionRouter);
+app.use('/api/tourexclusion',tourexclusionRouter);
+app.use('/api/knowbeforeyougo',knowbeforeyougoRouter );
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
