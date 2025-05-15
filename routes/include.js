@@ -1,22 +1,19 @@
 const express = require('express');
-const db = require('../db'); // Assuming db.js handles your MySQL connection
+const db = require('../db');
 const router = express.Router();
 const bodyParser = require('body-parser');
-
-// Middleware to parse JSON
-router.use(bodyParser.json());
-
-// Import handleResponse utility
 const handleResponse = require('../utils/handleResponse');
 
-// 1. Get all inclusions
+router.use(bodyParser.json());
+
+// 1. Get all include records
 router.get('/all', (req, res) => {
   db.query('SELECT * FROM `include`', (err, results) => {
     handleResponse(err, results, res);
   });
 });
 
-// 2. Get a specific inclusion by ID
+// 2. Get a single include record by ID
 router.get('/:id', (req, res) => {
   const includeId = req.params.id;
   db.query('SELECT * FROM `include` WHERE include_id = ?', [includeId], (err, results) => {
@@ -24,33 +21,47 @@ router.get('/:id', (req, res) => {
   });
 });
 
-// 3. Create a new inclusion
+// 3. Create a new include entry
 router.post('/create', (req, res) => {
-  const { package_id, includetagslist_id } = req.body;
+  const { include_includtagname, include_packageid } = req.body;
 
-  const query = 'INSERT INTO `include` (package_id, includetagslist_id) VALUES (?, ?)';
+  const query = `
+    INSERT INTO \`include\` (include_includtagname, include_packageid)
+    VALUES (?, ?)
+  `;
 
-  db.query(query, [package_id, includetagslist_id], (err, result) => {
-    handleResponse(err, [{ include_id: result.insertId, package_id, includetagslist_id }], res);
+  db.query(query, [include_includtagname, include_packageid], (err, result) => {
+    handleResponse(err, [
+      {
+        include_id: result.insertId,
+        include_includtagname,
+        include_packageid,
+      },
+    ], res);
   });
 });
 
-// 4. Update an existing inclusion by ID
+// 4. Update an include record by ID
 router.put('/edit/:id', (req, res) => {
   const includeId = req.params.id;
-  const { package_id, includetagslist_id } = req.body;
+  const { include_includtagname, include_packageid } = req.body;
 
-  const query = 'UPDATE `include` SET package_id = ?, includetagslist_id = ? WHERE include_id = ?';
+  const query = `
+    UPDATE \`include\`
+    SET include_includtagname = ?, include_packageid = ?
+    WHERE include_id = ?
+  `;
 
-  db.query(query, [package_id, includetagslist_id, includeId], (err, result) => {
+  db.query(query, [include_includtagname, include_packageid, includeId], (err, result) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ status: false, message: 'Inclusion not found', data: [] });
     }
+
     handleResponse(err, [{ message: 'Inclusion updated successfully' }], res);
   });
 });
 
-// 5. Delete an inclusion by ID
+// 5. Delete an include record by ID
 router.delete('/delete/:id', (req, res) => {
   const includeId = req.params.id;
 
@@ -58,19 +69,18 @@ router.delete('/delete/:id', (req, res) => {
     if (result.affectedRows === 0) {
       return res.status(404).json({ status: false, message: 'Inclusion not found', data: [] });
     }
+
     handleResponse(err, [{ message: 'Inclusion deleted successfully' }], res);
   });
 });
 
-// 6. Get all inclusions for a specific package_id and join with includetagslist
-router.get('/package/:package_id', (req, res) => {
-  const packageId = req.params.package_id;
+// ✅ 6. Get all include records for a specific package ID
+router.get('/package/:packageid', (req, res) => {
+  const packageId = req.params.packageid;
 
   const query = `
-    SELECT i.include_id, i.package_id, i.includetagslist_id, it.includetagslist_name
-    FROM \`include\` i
-    JOIN includetagslist it ON i.includetagslist_id = it.includetagslist_id
-    WHERE i.package_id = ?
+    SELECT * FROM \`include\`
+    WHERE include_packageid = ?
   `;
 
   db.query(query, [packageId], (err, results) => {
@@ -78,5 +88,4 @@ router.get('/package/:package_id', (req, res) => {
   });
 });
 
-// Export the router for use in your app
 module.exports = router;
