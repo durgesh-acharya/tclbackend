@@ -69,41 +69,17 @@ router.delete('/delete/:id', (req, res) => {
   });
 });
 
-// Get all trip highlights joined with package info (assuming you have a 'packages' table)
-router.get('/joined/all', (req, res) => {
-  const query = `
-    SELECT 
-      triphighlights.triphighlights_id,
-      triphighlights.triphighlights_name,
-      triphighlights.triphighlights_packageid,
-      packages.package_name -- Adjust field as per your actual schema
-    FROM triphighlights
-    JOIN packages 
-      ON triphighlights.triphighlights_packageid = packages.package_id -- Adjust table/column names
-  `;
-  db.query(query, (err, results) => {
-    handleResponse(err, results, res);
-  });
-});
-
 // Get trip highlights by package ID
-router.get('/joined/package/:packageid', (req, res) => {
+router.get('/package/:packageid', (req, res) => {
   const packageId = req.params.packageid;
 
-  const query = `
-    SELECT 
-      triphighlights.triphighlights_id,
-      triphighlights.triphighlights_name,
-      triphighlights.triphighlights_packageid,
-      packages.package_description -- Adjust field as needed
-    FROM triphighlights
-    JOIN packages 
-      ON triphighlights.triphighlights_packageid = packages.package_id
-    WHERE triphighlights.triphighlights_packageid = ?
-  `;
-  db.query(query, [packageId], (err, results) => {
-    handleResponse(err, results, res);
-  });
+  db.query(
+    'SELECT * FROM triphighlights WHERE triphighlights_packageid = ?',
+    [packageId],
+    (err, results) => {
+      handleResponse(err, results, res);
+    }
+  );
 });
 
 module.exports = router;
