@@ -18,6 +18,14 @@ router.get('/all', (req, res) => {
   });
 });
 
+// Get only active locations
+router.get('/active', (req, res) => {
+  const query = 'SELECT * FROM locations WHERE locations_isactive = 1';
+  db.query(query, (err, results) => {
+    handleResponse(err, results, res);
+  });
+});
+
 // Get a single location by ID
 router.get('/:id', (req, res) => {
   const locationId = req.params.id;
