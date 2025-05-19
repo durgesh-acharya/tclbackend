@@ -8,7 +8,7 @@ router.use(bodyParser.json());
 
 // Import handleResponse utility
 const handleResponse = require('../utils/handleResponse');
-
+const upload = require('../utils/multerConfig');
 // Get all packages
 router.get('/all', (req, res) => {
   db.query('SELECT * FROM packages', (err, results) => {
@@ -24,8 +24,8 @@ router.get('/:id', (req, res) => {
   });
 });
 
-// Create a new package
-router.post('/create', (req, res) => {
+// Create a new package with image upload
+router.post('/create', upload.single('image'), (req, res) => {
   const { 
     packages_name, 
     packages_actualprice, 
@@ -33,10 +33,24 @@ router.post('/create', (req, res) => {
     packages_locationsid, 
     packages_locationdurations, 
     packages_destinationroutesid, 
-    packages_staycategoriesid,
-    packages_isactive // New field for active status
+    packages_staycategoriesid, 
+    packages_isactive 
   } = req.body;
 
+  // Check if necessary fields are present
+  if (!packages_name || !packages_actualprice || !packages_offerprice || !packages_isactive) {
+    return res.status(400).json({ message: 'Missing required fields: packages_name, packages_actualprice, packages_offerprice, or packages_isactive' });
+  }
+
+  // Check if file was uploaded
+  const imageUrl = req.file ? '/assets/' + req.file.filename : null;
+
+  // Handle case when no image was uploaded
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'No image uploaded.' });
+  }
+
+  // SQL query to insert package data into the database
   const query = `
     INSERT INTO packages (
       packages_name, 
@@ -45,24 +59,37 @@ router.post('/create', (req, res) => {
       packages_locationsid, 
       packages_locationdurations, 
       packages_destinationroutesid, 
-      packages_staycategoriesid,
-      packages_isactive
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      packages_staycategoriesid, 
+      packages_isactive,
+      packages_imageurl
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   db.query(query, [
     packages_name, 
     packages_actualprice, 
-    packages_offerprice,  
+    packages_offerprice, 
     packages_locationsid, 
     packages_locationdurations, 
     packages_destinationroutesid, 
-    packages_staycategoriesid,
-    packages_isactive
+    packages_staycategoriesid, 
+    packages_isactive, 
+    imageUrl
   ], (err, result) => {
-    handleResponse(err, [{ packages_id: result.insertId }], res);
+    if (err) {
+      console.error(err); // Log the error for debugging
+      return res.status(500).json({ message: 'Database error occurred', error: err });
+    }
+
+    // Return the result with the package ID and image URL
+    return res.status(201).json({
+      message: 'Package created successfully',
+      package_id: result.insertId,
+      image_url: imageUrl
+    });
   });
 });
+
 
 // Update a package by ID
 router.put('/edit/:id', (req, res) => {
