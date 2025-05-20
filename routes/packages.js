@@ -61,7 +61,7 @@ router.post('/create', upload.single('image'), (req, res) => {
       packages_destinationroutesid, 
       packages_staycategoriesid, 
       packages_isactive,
-      packages_imageurl
+      packages_imgUrl
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
