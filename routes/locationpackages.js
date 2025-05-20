@@ -9,19 +9,19 @@ router.use(bodyParser.json());
 // GET: Locations with their packages
 router.get('/locations-with-packages', (req, res) => {
   const query = `
-    SELECT 
-      l.locations_id AS location_id,
-      l.locations_name AS location_name,
-      p.packages_id AS package_id,
-      p.packages_name AS package_name,
-      p.packages_actualprice AS actual_price,
-      p.packages_offerprice AS offer_price,
-      p.packages_locationdurations AS duration_id,
-      p.packages_imageurl AS imageurl
-    FROM locations l
-    JOIN packages p ON l.locations_id = p.packages_locationsid
-    WHERE l.locations_isactive = 1 AND p.packages_isactive = 1
-    ORDER BY l.locations_id, p.packages_id;
+  SELECT 
+  l.locations_id AS location_id,
+  l.locations_name AS location_name,
+  p.packages_id AS package_id,
+  p.packages_name AS package_name,
+  p.packages_actualprice AS actual_price,
+  p.packages_offerprice AS offer_price,
+  p.packages_locationdurations AS duration_id,
+  p.packages_imgUrl AS imageurl
+FROM locations l
+JOIN packages p ON l.locations_id = p.packages_locationsid
+WHERE l.locations_isactive = 1 AND p.packages_isactive = 1
+ORDER BY l.locations_id, p.packages_id;
   `;
 
   db.query(query, (err, results) => {
