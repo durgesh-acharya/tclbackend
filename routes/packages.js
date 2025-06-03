@@ -171,7 +171,7 @@ router.post('/create', upload.single('image'), (req, res) => {
   db.query(query, values, (err, result) => {
     if (err) {
       console.error('Database error:', err);
-      return res.status(500).json({ message: 'Database error occurred', error: err });
+      return res.status(500).json({ message: 'Database error occurred', error: err,body : req.body });
     }
 
     return res.status(201).json({
