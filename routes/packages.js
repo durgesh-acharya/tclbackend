@@ -25,63 +25,155 @@ router.get('/:id', (req, res) => {
 });
 
 // Create a new package with image upload
+// router.post('/create', upload.single('image'), (req, res) => {
+//   const { 
+//     packages_name, 
+//     packages_actualprice, 
+//     packages_offerprice, 
+//     packages_locationsid, 
+//     packages_locationdurations, 
+//     packages_destinationroutesid, 
+//     packages_staycategoriesid, 
+//     packages_isactive 
+//   } = req.body;
+
+//   // Check if necessary fields are present
+//   if (!packages_name || !packages_actualprice || !packages_offerprice || !packages_isactive) {
+//     return res.status(400).json({ message: 'Missing required fields: packages_name, packages_actualprice, packages_offerprice, or packages_isactive' });
+//   }
+
+//   // Check if file was uploaded
+//   const imageUrl = req.file ? '/assets/' + req.file.filename : null;
+
+//   // Handle case when no image was uploaded
+//   if (!imageUrl) {
+//     return res.status(400).json({ message: 'No image uploaded.' });
+//   }
+
+//   // SQL query to insert package data into the database
+//   const query = `
+//     INSERT INTO packages (
+//       packages_name, 
+//       packages_actualprice, 
+//       packages_offerprice, 
+//       packages_locationsid, 
+//       packages_locationdurations, 
+//       packages_destinationroutesid, 
+//       packages_staycategoriesid, 
+//       packages_isactive,
+//       packages_imgUrl
+//     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+//   `;
+
+//   db.query(query, [
+//     packages_name, 
+//     packages_actualprice, 
+//     packages_offerprice, 
+//     packages_locationsid, 
+//     packages_locationdurations, 
+//     packages_destinationroutesid, 
+//     packages_staycategoriesid, 
+//     packages_isactive, 
+//     imageUrl
+//   ], (err, result) => {
+//     if (err) {
+//       console.error(err); // Log the error for debugging
+//       return res.status(500).json({ message: 'Database error occurred', error: err });
+//     }
+
+//     // Return the result with the package ID and image URL
+//     return res.status(201).json({
+//       message: 'Package created successfully',
+//       package_id: result.insertId,
+//       image_url: imageUrl
+//     });
+//   });
+// });
+
+
+// Update a package by ID
+
+// Helper function to parse integers safely
+const sanitizeInt = (value) => {
+  const parsed = parseInt(value);
+  return isNaN(parsed) ? null : parsed;
+};
+
+// POST /api/packages/create
 router.post('/create', upload.single('image'), (req, res) => {
-  const { 
-    packages_name, 
-    packages_actualprice, 
-    packages_offerprice, 
-    packages_locationsid, 
-    packages_locationdurations, 
-    packages_destinationroutesid, 
-    packages_staycategoriesid, 
-    packages_isactive 
+  const {
+    packages_name,
+    packages_actualprice,
+    packages_offerprice,
+    packages_locationsid,
+    packages_locationdurations,
+    packages_destinationroutesid,
+    packages_staycategoriesid,
+    packages_isactive
   } = req.body;
 
-  // Check if necessary fields are present
-  if (!packages_name || !packages_actualprice || !packages_offerprice || !packages_isactive) {
-    return res.status(400).json({ message: 'Missing required fields: packages_name, packages_actualprice, packages_offerprice, or packages_isactive' });
+  // Ensure all required fields are present and valid
+  if (
+    !packages_name ||
+    packages_actualprice === undefined ||
+    packages_offerprice === undefined ||
+    packages_locationsid === undefined ||
+    packages_locationdurations === undefined ||
+    packages_destinationroutesid === undefined ||
+    packages_staycategoriesid === undefined ||
+    packages_isactive === undefined
+  ) {
+    return res.status(400).json({
+      message: 'Missing one or more required fields.'
+    });
   }
 
-  // Check if file was uploaded
+  // Handle image upload
   const imageUrl = req.file ? '/assets/' + req.file.filename : null;
 
-  // Handle case when no image was uploaded
   if (!imageUrl) {
     return res.status(400).json({ message: 'No image uploaded.' });
   }
 
-  // SQL query to insert package data into the database
   const query = `
     INSERT INTO packages (
-      packages_name, 
-      packages_actualprice, 
-      packages_offerprice, 
-      packages_locationsid, 
-      packages_locationdurations, 
-      packages_destinationroutesid, 
-      packages_staycategoriesid, 
+      packages_name,
+      packages_actualprice,
+      packages_offerprice,
+      packages_locationsid,
+      packages_locationdurations,
+      packages_destinationroutesid,
+      packages_staycategoriesid,
       packages_isactive,
       packages_imgUrl
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  db.query(query, [
-    packages_name, 
-    packages_actualprice, 
-    packages_offerprice, 
-    packages_locationsid, 
-    packages_locationdurations, 
-    packages_destinationroutesid, 
-    packages_staycategoriesid, 
-    packages_isactive, 
+  const values = [
+    packages_name,
+    sanitizeInt(packages_actualprice),
+    sanitizeInt(packages_offerprice),
+    sanitizeInt(packages_locationsid),
+    sanitizeInt(packages_locationdurations),
+    sanitizeInt(packages_destinationroutesid),
+    sanitizeInt(packages_staycategoriesid),
+    sanitizeInt(packages_isactive),
     imageUrl
-  ], (err, result) => {
+  ];
+
+  // Final check: no nulls in NOT NULL fields
+  if (values.some(v => v === null)) {
+    return res.status(400).json({
+      message: 'Invalid or missing numeric fields.'
+    });
+  }
+
+  db.query(query, values, (err, result) => {
     if (err) {
-      console.error(err); // Log the error for debugging
+      console.error('Database error:', err);
       return res.status(500).json({ message: 'Database error occurred', error: err });
     }
 
-    // Return the result with the package ID and image URL
     return res.status(201).json({
       message: 'Package created successfully',
       package_id: result.insertId,
@@ -90,8 +182,6 @@ router.post('/create', upload.single('image'), (req, res) => {
   });
 });
 
-
-// Update a package by ID
 router.put('/edit/:id', (req, res) => {
   const packageId = req.params.id;
   const { 
