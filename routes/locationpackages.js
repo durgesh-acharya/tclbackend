@@ -72,6 +72,8 @@ router.get('/locationwithpackages/:id', (req, res) => {
       p.packages_actualprice AS actual_price,
       p.packages_offerprice AS offer_price,
       p.packages_locationdurations AS duration_id,
+      p.packages_destinationroutesid AS destinationroutes_id,
+      p.packages_staycategoriesid AS staycategories_id,
       p.packages_imgUrl AS imageurl
     FROM locations l
     JOIN packages p ON l.locations_id = p.packages_locationsid
