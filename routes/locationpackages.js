@@ -96,6 +96,8 @@ router.get('/locationwithpackages/:id', (req, res) => {
         package_name: row.package_name,
         imageurl: row.imageurl,
         duration_id: row.duration_id,
+        destinationroute_id : row.destinationroutes_id,
+        staycategories_id : row.staycategories_id,
         actual_price: row.actual_price,
         offer_price: row.offer_price,
         rating: 4.5, // Hardcoded
