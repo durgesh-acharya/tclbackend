@@ -23,6 +23,59 @@ router.get('/:id', (req, res) => {
     handleResponse(err, results, res);
   });
 });
+//search package based on various params
+router.get('/search/by-params', (req, res) => {
+  const {
+    location_id,
+    destinationroute_id,
+    staycategory_id,
+    duration_id
+  } = req.query;
+
+  // Check if any parameter is missing
+  if (
+    !location_id ||
+    !destinationroute_id ||
+    !staycategory_id ||
+    !duration_id
+  ) {
+    return res.status(400).json({
+      status: false,
+      message: 'Missing one or more required query parameters.',
+      data: []
+    });
+  }
+
+  const query = `
+    SELECT * FROM packages
+    WHERE
+      packages_locationsid = ? AND
+      packages_destinationroutesid = ? AND
+      packages_staycategoriesid = ? AND
+      packages_locationdurations = ?
+  `;
+
+  const values = [
+    parseInt(location_id),
+    parseInt(destinationroute_id),
+    parseInt(staycategory_id),
+    parseInt(duration_id)
+  ];
+
+  db.query(query, values, (err, results) => {
+    // If no package found
+    if (!err && results.length === 0) {
+      return res.status(404).json({
+        status: false,
+        message: 'No package found for the given parameters.',
+        data: []
+      });
+    }
+
+    // Use your predefined response handler
+    handleResponse(err, results, res);
+  });
+});
 
 // Create a new package with image upload
 // router.post('/create', upload.single('image'), (req, res) => {
