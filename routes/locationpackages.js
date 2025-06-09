@@ -17,6 +17,8 @@ router.get('/locations-with-packages', (req, res) => {
   p.packages_actualprice AS actual_price,
   p.packages_offerprice AS offer_price,
   p.packages_locationdurations AS duration_id,
+  p.packages_destinationroutesid AS destinationroutes_id,
+  p.packages_staycategoriesid AS staycategories_id,
   p.packages_imgUrl AS imageurl
 FROM locations l
 JOIN packages p ON l.locations_id = p.packages_locationsid
@@ -48,6 +50,8 @@ ORDER BY l.locations_id, p.packages_id;
         package_name: row.package_name,
         imageurl: row.imageurl,
         duration_id: row.duration_id,
+        destinationroute_id : row.destinationroutes_id,
+        staycategories_id : row.staycategories_id,
         actual_price: row.actual_price,
         offer_price: row.offer_price,
         rating: 4.5, // Hardcoded as per your structure
