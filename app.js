@@ -29,6 +29,7 @@ const tourinclusionRouter = require('./routes/tourinclusion');
 const tourexclusionRouter = require('./routes/tourexclusion');
 const knowbeforeyougoRouter = require('./routes/knowbeforeyougo');
 const locationpackagesRouter = require('./routes/locationpackages');
+const packageimagesRouter = require('./routes/packageimages');
 // use routes
 app.use('/api/locations',locationRouter);
 app.use('/api/staycategories',staycategoriesRouter);
@@ -48,6 +49,7 @@ app.use('/api/tourinclusion',tourinclusionRouter);
 app.use('/api/tourexclusion',tourexclusionRouter);
 app.use('/api/knowbeforeyougo',knowbeforeyougoRouter );
 app.use('/api/locationpackages',locationpackagesRouter );
+app.use('/api/packageimages',packageimagesRouter );
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
