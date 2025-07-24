@@ -19,7 +19,7 @@ router.get('/locations-with-packages', (req, res) => {
   p.packages_locationdurations AS duration_id,
   p.packages_destinationroutesid AS destinationroutes_id,
   p.packages_staycategoriesid AS staycategories_id,
-  p.packages_imgUrl AS imageurl
+  p.packages_imgUrl AS imageurl,
   ld.locationdurations_tags AS duration_tags
 FROM locations l
 JOIN packages p ON l.locations_id = p.packages_locationsid
@@ -81,7 +81,7 @@ router.get('/locationwithpackages/:id', (req, res) => {
       p.packages_locationdurations AS duration_id,
       p.packages_destinationroutesid AS destinationroutes_id,
       p.packages_staycategoriesid AS staycategories_id,
-      p.packages_imgUrl AS imageurl
+      p.packages_imgUrl AS imageurl,
       ld.locationdurations_tags AS duration_tags
     FROM locations l
     JOIN packages p ON l.locations_id = p.packages_locationsid
