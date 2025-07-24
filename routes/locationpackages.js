@@ -22,6 +22,7 @@ router.get('/locations-with-packages', (req, res) => {
   p.packages_imgUrl AS imageurl
 FROM locations l
 JOIN packages p ON l.locations_id = p.packages_locationsid
+JOIN locationdurations ld ON p.packages_locationdurations = ld.locationdurations_id
 WHERE l.locations_isactive = 1 AND p.packages_isactive = 1
 ORDER BY l.locations_id, p.packages_id;
   `;
@@ -55,6 +56,7 @@ ORDER BY l.locations_id, p.packages_id;
         actual_price: row.actual_price,
         offer_price: row.offer_price,
         rating: 4.5, // Hardcoded as per your structure
+        duration_tags: row.duration_tags,
       });
     });
 
@@ -81,6 +83,7 @@ router.get('/locationwithpackages/:id', (req, res) => {
       p.packages_imgUrl AS imageurl
     FROM locations l
     JOIN packages p ON l.locations_id = p.packages_locationsid
+    JOIN locationdurations ld ON p.packages_locationdurations = ld.locationdurations_id
     WHERE l.locations_isactive = 1 
       AND p.packages_isactive = 1
       AND l.locations_id = ?
@@ -105,6 +108,7 @@ router.get('/locationwithpackages/:id', (req, res) => {
         actual_price: row.actual_price,
         offer_price: row.offer_price,
         rating: 4.5, // Hardcoded
+        duration_tags: row.duration_tags,
       })),
     };
 
