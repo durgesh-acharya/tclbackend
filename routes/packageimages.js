@@ -15,18 +15,27 @@ router.use(express.json());
 router.post('/create', upload.single('image'), (req, res) => {
   const { packageimages_category, packageimages_packageid } = req.body;
 
-  if (!req.file || !packageimages_category || !packageimages_packageid) {
-    return res.status(400).json({ message: 'Missing required fields or image file.' });
+  // Check required fields
+  if (!packageimages_category || !packageimages_packageid) {
+    return res.status(400).json({ message: 'Missing required fields: packageimages_category or packageimages_packageid' });
   }
 
-  const imageUrl = `/assets/${req.file.filename}`;
-  const query = `INSERT INTO packageimages (packageimages_url, packageimages_category, packageimages_packageid)
-                 VALUES (?, ?, ?)`;
+  // Check if file uploaded
+  const imageUrl = req.file ? '/assets/' + req.file.filename : null;
+  if (!imageUrl) {
+    return res.status(400).json({ message: 'No image uploaded.' });
+  }
+
+  // Insert into database
+  const query = `
+    INSERT INTO packageimages (packageimages_url, packageimages_category, packageimages_packageid)
+    VALUES (?, ?, ?)
+  `;
 
   db.query(query, [imageUrl, packageimages_category, packageimages_packageid], (err, result) => {
     if (err) {
-      console.error('Insert error:', err);
-      return res.status(500).json({ message: 'Database error', error: err });
+      console.error('Database insert error:', err);
+      return res.status(500).json({ message: 'Database error occurred', error: err });
     }
 
     res.status(201).json({
