@@ -19,7 +19,7 @@ router.post('/create', upload.single('image'), (req, res) => {
     return res.status(400).json({ message: 'Missing required fields or image file.' });
   }
 
-  const imageUrl = `/images/${req.file.filename}`;
+  const imageUrl = `/assets/${req.file.filename}`;
   const query = `INSERT INTO packageimages (packageimages_url, packageimages_category, packageimages_packageid)
                  VALUES (?, ?, ?)`;
 
